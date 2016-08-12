@@ -1,29 +1,36 @@
 <template>
-  <header class="header">
-    <a href="" class="logo"><img  src="./assets/logo.png"></a>
-    <h1 class="title" v-text="msg"></h1>
-  </header>
+  <app-headr></app-headr>
   <section class="stage" id="stage" v-el:stage>
     <section class="img-sec">
-       <figure  v-for="figure in figures" class="img-fig" v-bind:class="{ 'is-inverse' : isInverse[$index] }" v-on:click.stop="handleClick($index)" v-bind:style="styleObject[$index]">
+       <figure  v-for="figure in figures" 
+                class="img-fig" 
+                v-bind:class="{ 'is-inverse' : isInverse[$index] }" 
+                v-on:click.stop="handleClick($index)" 
+                v-bind:style="styleObject[$index]">
           <img :src="figure.src" alt="{{figure.title}}">
           <figcaption>
-            <h3 class="img-tit">{{figure.title}}</h3>
-            <div class="img-back">
-              {{figure.desc}}
-            </div>
+            <h3 class="img-tit" v-text="figure.title"></h3>
+            <div class="img-back" v-text="figure.desc"></div>
           </figcaption>
 
        </figure>
     </section>
     <nav class="contorller-nav">
-      <span v-for="figure in figures"></span>
+      <span v-for="figure in figures" 
+            class="contorller-init" 
+            v-on:click.stop="handleClick($index)"
+            v-bind:class="{ 'is-center' : imgsArrangeArr[$index].isCenter , 'is-inverse':isInverse[$index] }"></span>
     </nav>
   </section>
 </template>
 <script>
+import AppHeadr from './components/app-headr';
+
 let imagesData = require('./data/imagesData.json')
 export default {
+  components:{
+    AppHeadr
+  },
   data () {
     return {
       msg: '图片画廊',
@@ -45,7 +52,8 @@ export default {
       },
       imgsArrangeArr:[],
       styleObject: [],
-      isInverse:[]
+      isInverse:[],
+      isCenter:[]
     }
   },
   methods : {
@@ -149,6 +157,8 @@ export default {
                styleOBJ.zIndex = 11;
             }
             styleObject.$set(i, styleOBJ) 
+            this.isInverse.$set(i, false )
+
           })
         },
         //获取区域的随机数值
@@ -163,7 +173,7 @@ export default {
   created () {
        let images = this.figures;
        for (let i = 0; i < images.length; i++) {
-            images[i].src = "static/images/"+images[i].fileName;
+            images[i].src = require("./images/"+images[i].fileName);
             if (!this.imgsArrangeArr[i]) {
               this.imgsArrangeArr[i] = {
                 pos:{
